@@ -153,7 +153,7 @@ $tweaks = @(
 	# "DisableThumbnails",          # "EnableThumbnails",
 	# "DisableThumbsDB",              # "EnableThumbsDB",
 
-	### Application Tweaks ###
+	### Windows 10 App Tweaks ###
     # "EnableOneDrive",
 	"UninstallMsftBloat",           # "InstallMsftBloat",
 	"UninstallThirdPartyBloat",     # "InstallThirdPartyBloat",
@@ -482,11 +482,7 @@ Function EnableLocationTracking {
 	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration" -Name "Status" -Type DWord -Value 1
 }
 
-# Disable automatic Maps updates
-Function DisableMapUpdates {
-	Write-Output "Disabling automatic Maps updates..."
-	Set-ItemProperty -Path "HKLM:\SYSTEM\Maps" -Name "AutoUpdateEnabled" -Type DWord -Value 0
-}
+
 
 # Enable automatic Maps updates
 Function EnableMapUpdates {
@@ -494,17 +490,6 @@ Function EnableMapUpdates {
 	Remove-ItemProperty -Path "HKLM:\SYSTEM\Maps" -Name "AutoUpdateEnabled" -ErrorAction SilentlyContinue
 }
 
-# Disable Feedback
-Function DisableFeedback {
-	Write-Output "Disabling Feedback..."
-	If (!(Test-Path "HKCU:\SOFTWARE\Microsoft\Siuf\Rules")) {
-		New-Item -Path "HKCU:\SOFTWARE\Microsoft\Siuf\Rules" -Force | Out-Null
-	}
-	Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Siuf\Rules" -Name "NumberOfSIUFInPeriod" -Type DWord -Value 0
-	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" -Name "DoNotShowFeedbackNotifications" -Type DWord -Value 1
-	Disable-ScheduledTask -TaskName "Microsoft\Windows\Feedback\Siuf\DmClient" -ErrorAction SilentlyContinue | Out-Null
-	Disable-ScheduledTask -TaskName "Microsoft\Windows\Feedback\Siuf\DmClientOnScenarioDownload" -ErrorAction SilentlyContinue | Out-Null
-}
 
 # Enable Feedback
 Function EnableFeedback {
@@ -539,32 +524,7 @@ Function DisableAdvertisingID {
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" -Name "DisabledByGroupPolicy" -Type DWord -Value 1
 }
 
-# Enable Advertising ID
-Function EnableAdvertisingID {
-	Write-Output "Enabling Advertising ID..."
-	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" -Name "DisabledByGroupPolicy" -ErrorAction SilentlyContinue
-}
 
-# Disable Cortana
-Function DisableCortana {
-	Write-Output "Disabling Cortana..."
-	If (!(Test-Path "HKCU:\SOFTWARE\Microsoft\Personalization\Settings")) {
-		New-Item -Path "HKCU:\SOFTWARE\Microsoft\Personalization\Settings" -Force | Out-Null
-	}
-	Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Personalization\Settings" -Name "AcceptedPrivacyPolicy" -Type DWord -Value 0
-	If (!(Test-Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization")) {
-		New-Item -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization" -Force | Out-Null
-	}
-	Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization" -Name "RestrictImplicitTextCollection" -Type DWord -Value 1
-	Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization" -Name "RestrictImplicitInkCollection" -Type DWord -Value 1
-	If (!(Test-Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore")) {
-		New-Item -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" -Force | Out-Null
-	}
-	Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" -Name "HarvestContacts" -Type DWord -Value 0
-	If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search")) {
-		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Force | Out-Null
-	}
-	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "AllowCortana" -Type DWord -Value 0
 }
 
 # Enable Cortana
@@ -578,7 +538,7 @@ Function EnableCortana {
 	Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization" -Name "RestrictImplicitInkCollection" -Type DWord -Value 0
 	Remove-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" -Name "HarvestContacts" -ErrorAction SilentlyContinue
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "AllowCortana" -ErrorAction SilentlyContinue
-}
+
 
 # Disable Error reporting
 Function DisableErrorReporting {
@@ -587,21 +547,8 @@ Function DisableErrorReporting {
 	Disable-ScheduledTask -TaskName "Microsoft\Windows\Windows Error Reporting\QueueReporting" | Out-Null
 }
 
-# Enable Error reporting
-Function EnableErrorReporting {
-	Write-Output "Enabling Error reporting..."
-	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\Windows Error Reporting" -Name "Disabled" -ErrorAction SilentlyContinue
-	Enable-ScheduledTask -TaskName "Microsoft\Windows\Windows Error Reporting\QueueReporting" | Out-Null
-}
 
-# Restrict Windows Update P2P only to local network - Needed only for 1507 as local P2P is the default since 1511
-Function SetP2PUpdateLocal {
-	Write-Output "Restricting Windows Update P2P only to local network..."
-	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config")) {
-		New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" | Out-Null
-	}
-	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" -Name "DODownloadMode" -Type DWord -Value 1
-}
+
 
 # Unrestrict Windows Update P2P
 Function SetP2PUpdateInternet {
@@ -609,19 +556,6 @@ Function SetP2PUpdateInternet {
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" -Name "DODownloadMode" -ErrorAction SilentlyContinue
 }
 
-# Stop and disable Diagnostics Tracking Service
-Function DisableDiagTrack {
-	Write-Output "Stopping and disabling Diagnostics Tracking Service..."
-	Stop-Service "DiagTrack" -WarningAction SilentlyContinue
-	Set-Service "DiagTrack" -StartupType Disabled
-}
-
-# Enable and start Diagnostics Tracking Service
-Function EnableDiagTrack {
-	Write-Output "Enabling and starting Diagnostics Tracking Service..."
-	Set-Service "DiagTrack" -StartupType Automatic
-	Start-Service "DiagTrack" -WarningAction SilentlyContinue
-}
 
 # Stop and disable WAP Push Service
 Function DisableWAPPush {
@@ -644,12 +578,7 @@ Function EnableWAPPush {
 # Security Tweaks
 ##########
 
-# Lower UAC level (disabling it completely would break apps)
-Function SetUACLow {
-	Write-Output "Lowering UAC level..."
-	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Type DWord -Value 0
-	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "PromptOnSecureDesktop" -Type DWord -Value 0
-}
+
 
 # Raise UAC level
 Function SetUACHigh {
@@ -658,17 +587,7 @@ Function SetUACHigh {
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "PromptOnSecureDesktop" -Type DWord -Value 1
 }
 
-# Enable sharing mapped drives between users
-Function EnableSharingMappedDrives {
-	Write-Output "Enabling sharing mapped drives between users..."
-	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableLinkedConnections" -Type DWord -Value 1
-}
 
-# Disable sharing mapped drives between users
-Function DisableSharingMappedDrives {
-	Write-Output "Disabling sharing mapped drives between users..."
-	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableLinkedConnections" -ErrorAction SilentlyContinue
-}
 
 # Disable implicit administrative shares
 Function DisableAdminShares {
@@ -676,29 +595,10 @@ Function DisableAdminShares {
 	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" -Name "AutoShareWks" -Type DWord -Value 0
 }
 
-# Enable implicit administrative shares
-Function EnableAdminShares {
-	Write-Output "Enabling implicit administrative shares..."
-	Remove-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" -Name "AutoShareWks" -ErrorAction SilentlyContinue
-}
 
-# Disable obsolete SMB 1.0 protocol - Disabled by default since 1709
-Function DisableSMB1 {
-	Write-Output "Disabling SMB 1.0 protocol..."
-	Set-SmbServerConfiguration -EnableSMB1Protocol $false -Force
-}
 
-# Enable obsolete SMB 1.0 protocol - Disabled by default since 1709
-Function EnableSMB1 {
-	Write-Output "Enabling SMB 1.0 protocol..."
-	Set-SmbServerConfiguration -EnableSMB1Protocol $true -Force
-}
 
-# Disable SMB Server - Completely disables file and printer sharing, but leaves the system able to connect to another SMB server as a client
-Function DisableSMBServer {
-	Write-Output "Disabling SMB Server..."
-	Set-SmbServerConfiguration -EnableSMB1Protocol $false -Force
-	Set-SmbServerConfiguration -EnableSMB2Protocol $false -Force
+
 }
 
 # Enable SMB Server

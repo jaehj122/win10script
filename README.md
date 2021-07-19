@@ -5,7 +5,7 @@ This is the Ultimate Windows 10 Script from a creation from multiple debloat scr
 
 - Dark Mode
 - One Command to launch and run
-- Chocolatey Install
+- winget Install
 - O&O Shutup10 CFG and Run
 - Added Install Programs
 - Added Debloat Microsoft Store Apps

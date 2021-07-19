@@ -7,7 +7,7 @@ $Button = [System.Windows.MessageBoxButton]::YesNoCancel
 $ErrorIco = [System.Windows.MessageBoxImage]::Error
 $Ask = 'Do you want to run this as an Administrator?
         Select "Yes" to Run as an Administrator
-        Select "No" to not run this as an Administrator
+        Select "No I will Not" to not run this as an Administrator
 
         Select "Cancel" to stop the script.'
 
@@ -32,20 +32,20 @@ $Form.text                       = "Form"
 $Form.TopMost                    = $false
 
 $Panel1                          = New-Object system.Windows.Forms.Panel
-$Panel1.height                   = 156
+$Panel1.height                   = 1098
 $Panel1.width                    = 1032
 $Panel1.location                 = New-Object System.Drawing.Point(9,90)
 
 $Label1                          = New-Object system.Windows.Forms.Label
 $Label1.text                     = "Program Installation"
 $Label1.AutoSize                 = $true
-$Label1.width                    = 25
-$Label1.height                   = 10
+$Label1.width                    = 95
+$Label1.height                   = 90
 $Label1.location                 = New-Object System.Drawing.Point(10,30)
 $Label1.Font                     = New-Object System.Drawing.Font('Microsoft Sans Serif',30)
 
-$installchoco                    = New-Object system.Windows.Forms.Button
-$installchoco.text               = "Install Chocolatey"
+$installwinget                    = New-Object system.Windows.Forms.Button
+$installwinget.text               = "Install winget "
 $installchoco.width              = 200
 $installchoco.height             = 115
 $installchoco.location           = New-Object System.Drawing.Point(16,19)
@@ -54,22 +54,22 @@ $installchoco.Font               = New-Object System.Drawing.Font('Microsoft San
 $brave                           = New-Object system.Windows.Forms.Button
 $brave.text                      = "Brave Browser"
 $brave.width                     = 150
-$brave.height                    = 30
+$brave.height                    = 150
 $brave.location                  = New-Object System.Drawing.Point(250,19)
 $brave.Font                      = New-Object System.Drawing.Font('Microsoft Sans Serif',12)
 
 $firefox                         = New-Object system.Windows.Forms.Button
 $firefox.text                    = "Firefox"
-$firefox.width                   = 150
+$firefox.width                   = 190
 $firefox.height                  = 30
 $firefox.location                = New-Object System.Drawing.Point(250,61)
-$firefox.Font                    = New-Object System.Drawing.Font('Microsoft Sans Serif',12)
+$firefox.Font                    = New-Object System.Drawing.Font('Microsoft Sans Serif',72)
 
 $7zip                            = New-Object system.Windows.Forms.Button
-$7zip.text                       = "7-Zip"
+$7z.text                         = "7Z"
 $7zip.width                      = 150
-$7zip.height                     = 30
-$7zip.location                   = New-Object System.Drawing.Point(584,104)
+$7zip.height                     = 90
+$7zip.location                   = New-Object System.Drawing.Point(984,104)
 $7zip.Font                       = New-Object System.Drawing.Font('Microsoft Sans Serif',12)
 
 $irfanview                       = New-Object system.Windows.Forms.Button
@@ -435,17 +435,7 @@ $brave.Add_Click({
     Write-Host "Installed Brave Browser"
 })
 
-$firefox.Add_Click({
-    Write-Host "Installing Firefox"
-    choco install firefox -y
-    Write-Host "Installed Firefox"
-})
 
-$gchrome.Add_Click({
-    Write-Host "Installing Google Chrome"
-    choco install googlechrome -y
-    Write-Host "Installed Google Chrome"
-})
 
 $irfanview.Add_Click({
     Write-Host "Installing Irfanview (Image Viewer)"
@@ -453,16 +443,9 @@ $irfanview.Add_Click({
     Write-Host "Installed Irfanview (Image Viewer)"
 })
 
-$adobereader.Add_Click({
-    Write-Host "Installing Adobe Reader DC"
-    choco install adobereader -y
-    Write-Host "Installed Adobe Reader DC"
-})
 
-$notepad.Add_Click({
-    Write-Host "Installing Notepad++"
-    choco install notepadplusplus -y
-    Write-Host "Installed Notepad++"
+
+
 })
 
 $vlc.Add_Click({
@@ -677,13 +660,11 @@ $Bloatware = @(
         "Microsoft.StorePurchaseApp"
         "Microsoft.Wallet"
         "Microsoft.Whiteboard"
-        "Microsoft.WindowsAlarms"
         "microsoft.windowscommunicationsapps"
         "Microsoft.WindowsFeedbackHub"
         "Microsoft.WindowsMaps"
         "Microsoft.WindowsSoundRecorder"
-        "Microsoft.ZuneMusic"
-        "Microsoft.ZuneVideo"
+   
 
         #Sponsored Windows 10 AppX Apps
         #Add sponsored/featured apps to remove in the "*AppName*" format
@@ -706,11 +687,7 @@ $Bloatware = @(
         "*ACGMediaPlayer*"
         "*Netflix*"
         "*OneCalendar*"
-        "*LinkedInforWindows*"
-        "*HiddenCityMysteryofShadows*"
-        "*Hulu*"
-        "*HiddenCity*"
-        "*AdobePhotoshopExpress*"
+        
 
         #Optional: Typically not removed but you can if you need to for some reason
         #"*Microsoft.Advertising.Xaml_10.1712.5.0_x64__8wekyb3d8bbwe*"
@@ -786,7 +763,7 @@ $Paint3Dstuff = @(
     }
     }
 
-    Write-Host "Essential Tweaks Completed"
+    Write-Host "Essential Tweaks Done"
 })
 
 $windowssearch.Add_Click({
@@ -855,8 +832,7 @@ $securityhigh.Add_Click({
     Write-Host "Raising UAC level..."
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Type DWord -Value 5
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "PromptOnSecureDesktop" -Type DWord -Value 1
-    Write-Host "Disabling SMB 1.0 protocol..."
-    Set-SmbServerConfiguration -EnableSMB1Protocol $false -Force
+   
     Write-Host "Enabling Windows Defender..."
     Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender" -Name "DisableAntiSpyware" -ErrorAction SilentlyContinue
     If ([System.Environment]::OSVersion.Version.Build -eq 14393) {
@@ -939,7 +915,7 @@ $visualfx.Add_Click({
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAnimations" -Type DWord -Value 0
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" -Name "VisualFXSetting" -Type DWord -Value 3
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\DWM" -Name "EnableAeroPeek" -Type DWord -Value 0
-    Write-Host "Adjusted visual effects for performance"
+    Write-Host "Adjusted visualfx for performance"
 })
 
 $onedrive.Add_Click({

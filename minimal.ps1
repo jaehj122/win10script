@@ -213,7 +213,7 @@ function Show-Choco-Menu {
     {
     'y' { choco install $ChocoInstall -y }
     'n' { Break }
-    'q' { Exit  }
+    'e' { Exit  }
     }
  }
  until ($selection -match "y" -or $selection -match "n" -or $selection -match "q")
@@ -280,7 +280,7 @@ Function InstallNotepadplusplus {
 }
 
 Function InstallVLC {
-	Show-Choco-Menu -Title "Do you want to install VLC?" -ChocoInstall "vlc"
+	Show-Choco-Menu -Title "Do you want to install VLC?" -ChocoInstall "Vlc Media Player"
 }
 
 Function InstallIrfanview {
